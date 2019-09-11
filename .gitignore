@@ -1,4 +1,4 @@
 *.log
 *.db
-target/
-bin/
+/target
+/bin
