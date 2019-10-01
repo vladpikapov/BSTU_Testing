@@ -1,6 +1,7 @@
 using NUnit.Framework;
+using WorkWithNUnit;
 
-namespace TriangleTests
+namespace NUnitTests
 {
     public class TriangleTests
     {
@@ -47,7 +48,7 @@ namespace TriangleTests
         {
             Assert.IsTrue(triangle.IsTriangle(5, 5, 5));
         }
-        
+
         [Test]
         public void IsTriangleIsIsoscelesTriangle()
         {
@@ -57,7 +58,7 @@ namespace TriangleTests
         [Test]
         public void IsTriangleIsNotValid()
         {
-            Assert.IsFalse(triangle.IsTriangle(10,2,4));
+            Assert.IsFalse(triangle.IsTriangle(10, 2, 4));
         }
 
         [Test]
