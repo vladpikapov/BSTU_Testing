@@ -11,7 +11,7 @@ namespace AircompanyTests.Tests
     [TestFixture]
     public class AirportTest
     {
-        private readonly List<Plane> _planes = new List<Plane>(){
+        private readonly List<Plane> planes = new List<Plane>(){
            new PassengerPlane("Boeing-737", 900, 12000, 60500, 164),
            new PassengerPlane("Boeing-737-800", 940, 12300, 63870, 192),
            new PassengerPlane("Boeing-747", 980, 16100, 70500, 242),
@@ -28,30 +28,30 @@ namespace AircompanyTests.Tests
            new MilitaryPlane("C-130 Hercules", 650, 5000, 110000, MilitaryType.TRANSPORT)
    };
 
-        private readonly PassengerPlane _planeWithMaxPassengerCapacity = new PassengerPlane("Boeing-747", 980, 16100, 70500, 242);
+        private readonly PassengerPlane planeWithMaxPassengerCapacity = new PassengerPlane("Boeing-747", 980, 16100, 70500, 242);
        
-        private Airport _airport;
+        private Airport airport;
 
        [SetUp]
         public void Initialization()
         {
-            _airport = new Airport(_planes);
+            airport = new Airport(planes);
         }
 
         private bool AreAllPlanesHaveMilitaryTransportType()
         {
-            List<MilitaryPlane> transportMilitaryPlanes = _airport.GetTransportMilitaryPlanes();
+            List<MilitaryPlane> transportMilitaryPlanes = airport.GetTransportMilitaryPlanes();
             return transportMilitaryPlanes.All(type => type.PlaneTypeIs() == MilitaryType.TRANSPORT);
         }
 
         private bool CheckSortByMaxLoadCapacity()
         {
-            var sortedAirportList = _airport.SortByMaxLoadCapacity();
+            var sortedAirportList = airport.SortByMaxLoadCapacity();
             for (var i = 0; i < sortedAirportList.Planes.Count - 1; i++)
             {
                 var currentPlane = sortedAirportList.Planes[i];
                 var nextPlane = sortedAirportList.Planes[i + 1];
-                if (currentPlane._maxLoadCapacity > nextPlane._maxLoadCapacity)
+                if (currentPlane.maxLoadCapacity > nextPlane.maxLoadCapacity)
                     return false;
             }
             return true;
@@ -66,7 +66,7 @@ namespace AircompanyTests.Tests
         [Test]
         public void ItIsPlaneWithMaxPassengerCapacity()
         {
-            Assert.AreEqual(_airport.GetPassengerPlaneWithMaxPassengersCapacity(),_planeWithMaxPassengerCapacity);
+            Assert.AreEqual(airport.GetPassengerPlaneWithMaxPassengersCapacity(),planeWithMaxPassengerCapacity);
         }
 
         [Test]
