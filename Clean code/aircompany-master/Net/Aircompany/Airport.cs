@@ -18,11 +18,11 @@ namespace Aircompany
         public List<PassengerPlane> GetPassengersPlanes()
         {
             List<PassengerPlane> passengerPlanes = new List<PassengerPlane>();
-            for (int i=0; i < Planes.Count; i++)
+            foreach (var plane in Planes)
             {
-                if (Planes[i].GetType() == typeof(PassengerPlane))
+                if (plane.GetType() == typeof(PassengerPlane))
                 {
-                    passengerPlanes.Add((PassengerPlane)Planes[i]);
+                    passengerPlanes.Add((PassengerPlane)plane);
                 }
             }
             return passengerPlanes;
@@ -31,11 +31,11 @@ namespace Aircompany
         public List<MilitaryPlane> GetMilitaryPlanes()
         {
             List<MilitaryPlane> militaryPlanes = new List<MilitaryPlane>();
-            for (int i = 0; i < Planes.Count; i++)
+            foreach (var t in Planes)
             {
-                if (Planes[i].GetType() == typeof(MilitaryPlane))
+                if (t.GetType() == typeof(MilitaryPlane))
                 {
-                    militaryPlanes.Add((MilitaryPlane)Planes[i]);
+                    militaryPlanes.Add((MilitaryPlane)t);
                 }
             }
             return militaryPlanes;

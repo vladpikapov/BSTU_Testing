@@ -44,7 +44,7 @@ namespace AircompanyTests.Tests
             return transportMilitaryPlanes.All(type => type.PlaneTypeIs() == MilitaryType.TRANSPORT);
         }
 
-        private bool IsSortByMaxLoadCapacityWorkCorrectly()
+        private bool CheckSortByMaxLoadCapacity()
         {
             var sortedAirportList = _airport.SortByMaxLoadCapacity();
             for (var i = 0; i < sortedAirportList.Planes.Count - 1; i++)
@@ -70,9 +70,9 @@ namespace AircompanyTests.Tests
         }
 
         [Test]
-        public void IsSortByMaxLoadCapacityWorkCorrectlyTest()
+        public void IsSortByMaxLoadCapacityWorkCorrectly()
         {
-           Assert.IsTrue(IsSortByMaxLoadCapacityWorkCorrectly());
+           Assert.IsTrue(CheckSortByMaxLoadCapacity());
         }
     }
 }
