@@ -78,23 +78,26 @@ namespace WebDriver
         public void SearchTicketsWithOneAdultAndFiveChildren()
         {
             
-            mainPage.InputCityFromAndCityTo("London(any)", "Manchester (any)");
-            mainPage.InputDateDefaultValues();
-            mainPage.SetAdultsAndChildren(1, 5);
-            mainPage.Submit();
-            mainPage.WaitModalWindow();
-            Assert.AreEqual(errorMessage, mainPage.KidsError.Text);
+            mainPage.InputCityFromAndCityTo("London(any)", "Manchester (any)")
+            .InputDateDefaultValues()
+            .SetAdultsAndChildren(1, 5)
+            .Submit()
+            .WaitModalWindow();
+            Assert.AreEqual(errorMessage, mainPage.errorMessage.Text);
         }
 
         [TestMethod]
         public void OrderingATicketToTheSameStation()
         {
-            mainPage.InputCityFromAndCityTo("Manchester Victoria", "Manchester Victoria");
-            mainPage.InputDateDefaultValues();
-            mainPage.SetAdultsAndChildren(1, 0);
-            mainPage.Submit();
+            mainPage.InputCityFromAndCityTo("Manchester Victoria", "Manchester Victoria")
+            .InputDateDefaultValues()
+            .SetAdultsAndChildren(1, 0)
+            .Submit();
             ErrorPage error = new ErrorPage(driver);
-            Assert.AreEqual("I'm sorry we don't appear to be able to do that journey online at the moment, the chances are we're able to do it offline though. Please complete the form below and we'll get back to you with a quote.", error.ErrorMessage.Text);
+            Assert.AreEqual("I'm sorry we don't appear to be able " +
+                "to do that journey online at the moment," +
+                " the chances are we're able to do it offline though." +
+                " Please complete the form below and we'll get back to you with a quote.", error.errorMessage.Text);
         }
     }
 }

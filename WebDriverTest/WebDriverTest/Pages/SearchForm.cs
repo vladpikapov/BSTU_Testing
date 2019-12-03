@@ -2,10 +2,6 @@
 using OpenQA.Selenium.Support.PageObjects;
 using OpenQA.Selenium.Support.UI;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace WebDriverTest.Pages
 {
@@ -13,29 +9,29 @@ namespace WebDriverTest.Pages
     {
         IWebDriver driver;
 
-        [FindsBy(How =How.Name, Using="ctl00$MainContent$ucLoyaltyCart$txtFrom")]
-        IWebElement CityFrom { get; set; }
+        [FindsBy(How = How.Name, Using = "ctl00$MainContent$ucLoyaltyCart$txtFrom")]
+        IWebElement cityFrom;
 
-        [FindsBy(How =How.Name, Using="ctl00$MainContent$ucLoyaltyCart$txtTo")]
-        IWebElement CityTo { get; set; }
+        [FindsBy(How = How.Name, Using = "ctl00$MainContent$ucLoyaltyCart$txtTo")]
+        IWebElement cityTo;
 
         [FindsBy(How = How.Name, Using = "ctl00$MainContent$ucLoyaltyCart$txtDepartureDate")]
-        IWebElement DatePicker { get; set; }
+        IWebElement datePicker;
 
         [FindsBy(How = How.XPath, Using = "//*[@id='ui-datepicker-div']/table/tbody/tr[4]/td[5]/a")]
-        IWebElement CurrentDate { get; set; }
+        IWebElement currentDate;
 
         [FindsBy(How = How.Id, Using = "MainContent_ucLoyaltyCart_btnCheckout")]
-        IWebElement SearchButton { get; set; }
+        IWebElement searchButton;
 
         [FindsBy(How = How.Name, Using = "ctl00$MainContent$ucLoyaltyCart$ddlAdult")]
-        IWebElement AdultSelector { get; set; }
+        IWebElement adultSelector;
 
         [FindsBy(How = How.Name, Using = "ctl00$MainContent$ucLoyaltyCart$ddlChild")]
-        IWebElement ChildrenSelector { get; set; }
+        IWebElement childrenSelector;
 
         [FindsBy(How = How.XPath, Using = "//*[@id='MainContent_ucLoyaltyCart_pnlPassenger']/div[2]/p[1]")]
-        public IWebElement KidsError { get; set; }
+        public IWebElement errorMessage;
 
         public MainPage(IWebDriver driver)
         {
@@ -44,34 +40,38 @@ namespace WebDriverTest.Pages
 
         }
 
-        public void InputCityFromAndCityTo(string cityFrom, string cityTo)
+        public MainPage InputCityFromAndCityTo(string cityFrom, string cityTo)
         {
-            CityFrom.SendKeys(cityFrom);
-            CityTo.SendKeys(cityTo);
+            this.cityFrom.SendKeys(cityFrom);
+            this.cityTo.SendKeys(cityTo);
+            return this;
         }
 
-        public void WaitModalWindow()
+        public MainPage WaitModalWindow()
         {
             new WebDriverWait(driver, TimeSpan.FromSeconds(10)).Until(ExpectedConditions.ElementIsVisible(By.XPath("//*[@id='MainContent_ucLoyaltyCart_pnlPassenger']/div[2]/p[1]")));
+            return this;
         }
 
-        public void InputDateDefaultValues()
+        public MainPage InputDateDefaultValues()
         {
-            DatePicker.Click();
-            CurrentDate.Click();
+            datePicker.Click();
+            currentDate.Click();
+            return this;
         }
 
-        public void SetAdultsAndChildren(int countAdult, int countChildren)
+        public MainPage SetAdultsAndChildren(int countAdult, int countChildren)
         {
-            new SelectElement(AdultSelector).SelectByValue(countAdult.ToString());
-            new SelectElement(ChildrenSelector).SelectByValue(countChildren.ToString());
-            
+            new SelectElement(adultSelector).SelectByValue(countAdult.ToString());
+            new SelectElement(childrenSelector).SelectByValue(countChildren.ToString());
+            return this;
         }
 
-        public void Submit()
+        public MainPage Submit()
         {
-            ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].scrollIntoView();", SearchButton);
-            SearchButton.Click();
+            ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].scrollIntoView();", searchButton);
+            searchButton.Click();
+            return this;
         }
     }
 }
