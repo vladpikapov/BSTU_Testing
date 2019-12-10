@@ -32,6 +32,10 @@ namespace WebDriver
         private IWebDriver driver = new ChromeDriver();
 
         private string errorMessage = "Please enter at least 1 adult, senior or junior(youth) passenger.";
+        private string secondErrorMessage = "I'm sorry we don't appear to be able " +
+                "to do that journey online at the moment," +
+                " the chances are we're able to do it offline though." +
+                " Please complete the form below and we'll get back to you with a quote.";
 
         [TestMethod]
         public void SearchTicketsWithoutAdultPassenger()
@@ -94,10 +98,7 @@ namespace WebDriver
             .SetAdultsAndChildren(1, 0)
             .Submit();
             ErrorPage error = new ErrorPage(driver);
-            Assert.AreEqual("I'm sorry we don't appear to be able " +
-                "to do that journey online at the moment," +
-                " the chances are we're able to do it offline though." +
-                " Please complete the form below and we'll get back to you with a quote.", error.errorMessage.Text);
+            Assert.AreEqual(secondErrorMessage, error.errorMessage.Text);
         }
     }
 }

@@ -72,7 +72,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Pages\ErrorPage.cs" />
-    <Compile Include="Pages\SearchForm.cs" />
+    <Compile Include="Pages\MainPage.cs" />
     <Compile Include="WebTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
