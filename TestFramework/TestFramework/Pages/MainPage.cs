@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using TestFramework.Models;
+using TestFramework.Services;
 
 namespace TestFramework.Pages
 {
@@ -27,11 +28,8 @@ namespace TestFramework.Pages
         [FindsBy(How = How.Name, Using = "ctl00$MainContent$ucLoyaltyCart$txtReturnDate")]
         private IWebElement returnDatePicker;
 
-        [FindsBy(How = How.XPath, Using = "/html/body/div/table/tbody/tr[5]/td[4]/a")]
+        [FindsBy(How = How.XPath, Using = "//a[contains(text(),'27')]")]
         private IWebElement currentDate;
-
-        [FindsBy(How = How.XPath, Using = "/html/body/div/table/tbody/tr[5]/td[4]/a")]
-        private IWebElement returnDate;
 
         [FindsBy(How = How.Id, Using = "MainContent_ucLoyaltyCart_btnCheckout")]
         private IWebElement searchButton;
@@ -42,18 +40,26 @@ namespace TestFramework.Pages
         [FindsBy(How = How.Name, Using = "ctl00$MainContent$ucLoyaltyCart$ddlChild")]
         private IWebElement childrenSelector;
 
-        [FindsBy(How = How.XPath, Using = "//*[@id='ui-datepicker-div']/div[1]/a[2]")]
+        [FindsBy(How = How.XPath, Using = "//a[contains(@class,'ui-datepicker-next ui-corner-all')]")]
         private IWebElement nextMonth;
 
         [FindsBy(How = How.XPath, Using = "//*[@id='MainContent_ucLoyaltyCart_pnlPassenger']/div[2]/p[1]")]
         private IWebElement errorMessage;
 
-        [FindsBy(How = How.XPath, Using = "//*[@id='MainContent_ucLoyaltyCart_rdBookingType']/tbody/tr/td[2]/label")]
+        [FindsBy(How = How.XPath, Using = "//table[@id='MainContent_ucLoyaltyCart_rdBookingType']//label[contains(text(),'Return')]")]
         private IWebElement returnButton;
 
         private By errorMesageLocator = By.XPath("//*[@id='MainContent_ucLoyaltyCart_pnlPassenger']/div[2]/p[1]");
 
         private By returnDatePickerLocator = By.Name("ctl00$MainContent$ucLoyaltyCart$txtReturnDate");
+
+        private By currentDateLocator = By.XPath("//a[contains(text(),'27')]");
+
+        private By buttonLocator = By.Id("MainContent_ucLoyaltyCart_btnCheckout");
+
+        private By datePickerLocator = By.Name("ctl00$MainContent$ucLoyaltyCart$txtDepartureDate");
+
+        private By bindLocator = By.Id("_bindDivData");
 
         public MainPage(IWebDriver driver)
         {
@@ -62,12 +68,17 @@ namespace TestFramework.Pages
 
         }
 
-        public MainPage InputCityAndSetPassengers(SearchForm searchForm)
+        public MainPage InputCity(SearchForm searchForm)
         {
             cityFrom.SendKeys("");
             cityFrom.SendKeys(searchForm.FromCity);
             cityTo.SendKeys("");
             cityTo.SendKeys(searchForm.ToCity);
+            return this;
+        }
+
+        public MainPage SetPassengers(SearchForm searchForm)
+        {
             new SelectElement(adultSelector).SelectByValue(searchForm.NumberOfAdults);
             new SelectElement(childrenSelector).SelectByValue(searchForm.NumberOfChildren);
             return this;
@@ -75,14 +86,14 @@ namespace TestFramework.Pages
 
         public MainPage WaitModalWindow()
         {
-            new WebDriverWait(driver, TimeSpan.FromSeconds(10)).Until(ExpectedConditions.ElementIsVisible(errorMesageLocator));
+            Helper.WaitElementIsVisible(driver, errorMesageLocator, 10);
             return this;
         }
         
-        public MainPage InputDateEigthMonthsAdvance()
+        public MainPage InputDateEigthMonthsAdvance(int mountCount)
         {
             datePicker.Click();
-            for (int i = 0; i < 8; i++)
+            for (int i = 0; i < mountCount; i++)
                 nextMonth.Click();
             currentDate.Click();
             return this;
@@ -90,6 +101,8 @@ namespace TestFramework.Pages
 
         public MainPage InputDateDefaultValues()
         {
+            Helper.ScrollToValue(driver, 500);
+            Helper.WaitInvisibilityOfElement(driver, bindLocator, 15);
             datePicker.Click();
             currentDate.Click();
             return this;
@@ -97,7 +110,7 @@ namespace TestFramework.Pages
 
         public MainPage InputDateDefaultValuesForReturn()
         {
-            new WebDriverWait(driver, TimeSpan.FromSeconds(60)).Until(ExpectedConditions.ElementIsVisible(returnDatePickerLocator));
+            Helper.WaitElementToBeClickable(driver, returnDatePickerLocator, 60);
             datePicker.Click();
             currentDate.Click();
             return this;
@@ -105,22 +118,22 @@ namespace TestFramework.Pages
 
         public MainPage SubmitReturnDate()
         {
-            new WebDriverWait(driver, TimeSpan.FromSeconds(10)).Until(ExpectedConditions.ElementToBeClickable(By.Id("MainContent_ucLoyaltyCart_btnCheckout")));
-            ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].scrollIntoView();", searchButton);
+            Helper.WaitElementToBeClickable(driver, buttonLocator, 10);
+            Helper.ScrollToElement(driver, searchButton);
             searchButton.Click();
             return this;
         }
 
         public MainPage Submit()
         {
-            ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].scrollIntoView();", searchButton);
+            Helper.ScrollToElement(driver, searchButton);
             searchButton.Click();
             return this;
         }
 
         public SelectTheTicketPage SubmitValidValue()
         {
-            ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].scrollIntoView();", searchButton);
+            Helper.ScrollToElement(driver, searchButton);
             searchButton.Click();
             return new SelectTheTicketPage(driver);
         }
@@ -133,11 +146,11 @@ namespace TestFramework.Pages
 
         public MainPage SetEqualsReturnDateAndDepartureDate()
         {
-            ((IJavaScriptExecutor)driver).ExecuteScript("scroll(0,250);");
-            new WebDriverWait(driver, TimeSpan.FromSeconds(10)).Until(ExpectedConditions.ElementToBeClickable(returnDatePickerLocator));
+            Helper.ScrollToValue(driver,250);
+            Helper.WaitElementToBeClickable(driver, returnDatePickerLocator, 10);
             returnDatePicker.Click();
-            new WebDriverWait(driver, TimeSpan.FromSeconds(10)).Until(ExpectedConditions.ElementToBeClickable(By.XPath("/html/body/div/table/tbody/tr[5]/td[4]/a")));
-            returnDate.Click();
+            Helper.WaitElementToBeClickable(driver, currentDateLocator, 10);
+            currentDate.Click();
             return this;
 
         }

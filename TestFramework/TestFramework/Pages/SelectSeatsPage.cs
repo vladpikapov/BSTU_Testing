@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TestFramework.Services;
 
 namespace TestFramework.Pages
 {
@@ -22,7 +23,7 @@ namespace TestFramework.Pages
         {
             PageFactory.InitElements(driver, this);
             this.driver = driver;
-            new WebDriverWait(this.driver, TimeSpan.FromSeconds(60)).Until(ExpectedConditions.ElementIsVisible(buttonLocator));
+            Helper.WaitElementIsVisible(driver, buttonLocator, 60);
         }
 
         public TicketLocationPage Submit()

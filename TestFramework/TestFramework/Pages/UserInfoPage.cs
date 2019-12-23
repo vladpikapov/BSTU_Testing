@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using TestFramework.Models;
+using TestFramework.Services;
 
 namespace TestFramework.Pages
 {
@@ -39,19 +40,23 @@ namespace TestFramework.Pages
         [FindsBy(How = How.Id, Using = "MainContent_chkMandatory")]
         private IWebElement acceptParameters;
 
-        [FindsBy(How = How.Name, Using = "ctl00$MainContent$btnCheckout")]
+        [FindsBy(How = How.XPath, Using = "//input[@id='btnCheckout']")]
         private IWebElement submitButton;
 
+        private By modalWindowLocator = By.Id("MainContent_updProgress");
+
         private By waitLocator = By.Name("ctl00$MainContent$txtEmail");
+
+        private By conditionLocator = By.Id("evTermCondition");
 
         public UserInfoPage(IWebDriver driver)
         {
             PageFactory.InitElements(driver, this);
             this.driver = driver;
-            new WebDriverWait(this.driver, TimeSpan.FromSeconds(60)).Until(ExpectedConditions.ElementIsVisible(waitLocator));
+            Helper.WaitElementIsVisible(driver, waitLocator, 60);
         }
 
-        public UserInfoPage InputUserInfo(UserInfo user)
+        public PayPage InputUserInfo(UserInfo user)
         {
             email.SendKeys(user.Mail);
             phone.SendKeys(user.PhoneNumber);
@@ -59,18 +64,14 @@ namespace TestFramework.Pages
             city.SendKeys(user.City);
             zipCode.SendKeys(user.ZipCode);
             country.SendKeys(user.Country);
-            ((IJavaScriptExecutor)driver).ExecuteScript("scroll(0,1000);", termsAndConditions);
-            //Thread.Sleep(7000); mb driver wait, but what use ?
-            new WebDriverWait(this.driver, TimeSpan.FromSeconds(60)).Until(ExpectedConditions.ElementToBeClickable(By.Id("evTermCondition")));
+            Helper.WaitElementIsVisible(driver, modalWindowLocator, 15);
+            Helper.WaitInvisibilityOfElementWithText(driver, 15, modalWindowLocator, "UPDATING RESULTS...");
+            Helper.ScrollToValue(driver, 1000);
+            Helper.WaitElementToBeClickable(driver, conditionLocator, 60);
             termsAndConditions.Click();
-            //Thread.Sleep(1000);
-            ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].scrollIntoView();", acceptParameters);
+            Helper.ScrollToElement(driver, acceptParameters);
             acceptParameters.Click();
-            return this;
-        }
-
-        public PayPage Submit()
-        {
+            submitButton.Click();// no comments....... it`s awesome)
             submitButton.Click();
             return new PayPage(driver);
         }

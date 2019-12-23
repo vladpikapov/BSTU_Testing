@@ -16,7 +16,8 @@ namespace TestFramework.Tests
         public void SearchTicketsWithOneAdultAndFiveChildren()
         {
 
-          string message = new MainPage(driver).InputCityAndSetPassengers(SearchFormCreator.WithFiveChildren())
+          string message = new MainPage(driver).InputCity(SearchFormCreator.WithAllParameters())
+                .SetPassengers(SearchFormCreator.WithFiveChildren())
                 .InputDateDefaultValues()
                 .Submit()
                 .WaitModalWindow().GetErrorMessage();
@@ -27,7 +28,8 @@ namespace TestFramework.Tests
         [Category("SearchCategory")]
         public void OrderingATicketToTheSameStation()
         {
-            new MainPage(driver).InputCityAndSetPassengers(SearchFormCreator.InSameStation())
+            new MainPage(driver).InputCity(SearchFormCreator.InSameStation())
+                .SetPassengers(SearchFormCreator.InSameStation())
                 .InputDateDefaultValues()
                 .Submit();
             Assert.AreEqual("I'm sorry we don't appear to be able " +
@@ -40,7 +42,8 @@ namespace TestFramework.Tests
         [Category("SearchCategory")]
         public void SearchTicketsWithoutAdultPassengers()
         {
-            string message = new MainPage(driver).InputCityAndSetPassengers(SearchFormCreator.WithoutAdultPassengers())
+            string message = new MainPage(driver).InputCity(SearchFormCreator.WithAllParameters())
+                .SetPassengers(SearchFormCreator.WithoutAdultPassengers())
                 .InputDateDefaultValues()
                 .Submit()
                 .GetErrorMessage();
@@ -52,7 +55,8 @@ namespace TestFramework.Tests
         [Category("SearchCategory")]
         public void SearchTicketsWithoutPassengers()
         {
-            string message = new MainPage(driver).InputCityAndSetPassengers(SearchFormCreator.WithoutPassengers())
+            string message = new MainPage(driver).InputCity(SearchFormCreator.WithAllParameters())
+                .SetPassengers(SearchFormCreator.WithoutPassengers())
                 .InputDateDefaultValues()
                 .Submit()
                 .GetAlertErrorMessage();
@@ -63,8 +67,9 @@ namespace TestFramework.Tests
         [Category("DateCategory")]
         public void SearchTicketForEightMonthsInAdvance()
         {
-            new MainPage(driver).InputCityAndSetPassengers(SearchFormCreator.WithAllParameters())
-                .InputDateEigthMonthsAdvance()
+            new MainPage(driver).InputCity(SearchFormCreator.WithAllParameters())
+                .SetPassengers(SearchFormCreator.WithAllParameters())
+                .InputDateEigthMonthsAdvance(8)
                 .Submit();
             Assert.AreEqual("I'm sorry we don't appear to be able " +
                "to do that journey online at the moment," +
@@ -76,7 +81,8 @@ namespace TestFramework.Tests
         [Category("DateCategory")]
         public void SearchTicketWithEqualDepartureAndReturnDate()
         {
-            new MainPage(driver).InputCityAndSetPassengers(SearchFormCreator.WithAllParameters())
+            new MainPage(driver).InputCity(SearchFormCreator.WithAllParameters())
+                .SetPassengers(SearchFormCreator.WithAllParameters())
                 .ReturnSearchClick()
                 .InputDateDefaultValuesForReturn()
                 .SetEqualsReturnDateAndDepartureDate()
@@ -91,7 +97,8 @@ namespace TestFramework.Tests
         [Category("SearchCategory")]
         public void SearchTicketWithNonExistingStations()
         {
-            new MainPage(driver).InputCityAndSetPassengers(SearchFormCreator.OtherCity())
+            new MainPage(driver).InputCity(SearchFormCreator.WithAllParameters())
+                .SetPassengers(SearchFormCreator.WithAllParameters())
                 .InputDateDefaultValues()
                 .Submit();
             Assert.AreEqual("I'm sorry we don't appear to be able " +
@@ -104,22 +111,25 @@ namespace TestFramework.Tests
         [Category("UserCategory")]
         public void SetEmptyUserInfo()
         {
-          SelectTheTicketPage selectTheTicketPage =  new MainPage(driver).InputCityAndSetPassengers(SearchFormCreator.WithAllParameters())
+          SelectTheTicketPage selectTheTicketPage =  new MainPage(driver).InputCity(SearchFormCreator.WithAllParameters())
+                .SetPassengers(SearchFormCreator.WithAllParameters())
                 .InputDateDefaultValues()
                 .SubmitValidValue();
-            Assert.AreEqual(true, selectTheTicketPage.SelectClass()
+            string className = selectTheTicketPage.SelectClass()
                 .Submit()
                 .WaitModalWindow()
                 .InputUserInfo(UserInfoCreator.WithEmptyName())
                 .Continue()
-                .IsInvalidValue());
+                .IsInvalidValue();
+            Assert.AreEqual("starail-Form-input starail-Form-error", className);
         }
 
         [Test]
         [Category("UserCategory")]
         public void CheckResult()
         {
-            SelectTheTicketPage selectTheTicketPage = new MainPage(driver).InputCityAndSetPassengers(SearchFormCreator.WithAllParameters())
+            SelectTheTicketPage selectTheTicketPage = new MainPage(driver).InputCity(SearchFormCreator.WithAllParameters())
+                .SetPassengers(SearchFormCreator.WithAllParameters())
                 .InputDateDefaultValues()
                 .SubmitValidValue();
             SelectSeatsPage selectSeatsPage = selectTheTicketPage.SelectClass()
@@ -129,9 +139,8 @@ namespace TestFramework.Tests
                 .ContinueWithValidParameters();
             TicketLocationPage ticketLocationPage = selectSeatsPage.Submit();
             UserInfoPage userInfoPage = ticketLocationPage.Submit();
-            PayPage payPage = userInfoPage.InputUserInfo(UserInfoCreator.WithDefaultParameters())
-                .Submit();
-            Assert.IsTrue(payPage.CheckResult());
+            PayPage payPage = userInfoPage.InputUserInfo(UserInfoCreator.WithDefaultParameters());
+            Assert.AreEqual("09:24 | 27 Dec 2019", payPage.GetResult());
         }
 
 
@@ -139,7 +148,8 @@ namespace TestFramework.Tests
         [Category("UserCategory")]
         public void InputInvalidCardParameters()
         {
-            SelectTheTicketPage selectTheTicketPage = new MainPage(driver).InputCityAndSetPassengers(SearchFormCreator.WithAllParameters())
+            SelectTheTicketPage selectTheTicketPage = new MainPage(driver).InputCity(SearchFormCreator.WithAllParameters())
+                .SetPassengers(SearchFormCreator.WithAllParameters())
                 .InputDateDefaultValues()
                 .SubmitValidValue();
             SelectSeatsPage selectSeatsPage = selectTheTicketPage.SelectClass()
@@ -149,11 +159,11 @@ namespace TestFramework.Tests
                 .ContinueWithValidParameters();
             TicketLocationPage ticketLocationPage = selectSeatsPage.Submit();
             UserInfoPage userInfoPage = ticketLocationPage.Submit();
-            PayPage payPage = userInfoPage.InputUserInfo(UserInfoCreator.WithDefaultParameters())
-                .Submit();
-            Assert.IsTrue(payPage.InputCardParameters(CardCreator.DefaultParameters())
+            PayPage payPage = userInfoPage.InputUserInfo(UserInfoCreator.WithDefaultParameters());
+            string message = payPage.InputCardEmptyParameters()
                 .Submit()
-                .IsNotValid());
+                .GetAlertErrorMessage();
+            Assert.AreEqual("Please enter card number.",message);
         }
     }
 }

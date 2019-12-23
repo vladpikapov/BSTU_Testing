@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TestFramework.Models;
+using TestFramework.Services;
 
 namespace TestFramework.Pages
 {
@@ -36,16 +37,18 @@ namespace TestFramework.Pages
 
         private By waitModalWindow = By.Id("MainContent_ucSResultEvolvi_pnlQuckLoad");
 
+        private By selectClassLocator = By.XPath("/html/body/form/main/div[1]/div[1]/div[2]/div[1]/div/div[4]/div[2]/div/div/div[1]/div[1]/div[3]/div/div[2]/div[3]/div[2]/label/span/span");
+
         public SelectTheTicketPage(IWebDriver driver)
         {
             PageFactory.InitElements(driver, this);
             this.driver = driver;
-            new WebDriverWait(this.driver, TimeSpan.FromSeconds(60)).Until(ExpectedConditions.ElementIsVisible(waitingPageElement));
+            Helper.WaitElementIsVisible(driver, waitingPageElement, 60);
         }
 
         public SelectTheTicketPage SelectClass()
         {
-            new WebDriverWait(driver, TimeSpan.FromSeconds(10)).Until(ExpectedConditions.ElementIsVisible(By.XPath("/html/body/form/main/div[1]/div[1]/div[2]/div[1]/div/div[4]/div[2]/div/div/div[1]/div[1]/div[3]/div/div[2]/div[3]/div[2]/label/span/span")));
+            Helper.WaitElementIsVisible(driver, selectClassLocator, 10);
             selectClass.Click();
             return this;
         }
@@ -70,7 +73,7 @@ namespace TestFramework.Pages
 
         public SelectTheTicketPage WaitModalWindow()
         {
-            new WebDriverWait(driver, TimeSpan.FromSeconds(60)).Until(ExpectedConditions.ElementIsVisible(waitModalWindow));
+            Helper.WaitElementIsVisible(driver, waitModalWindow, 60);
             return this;
         }
 
@@ -82,10 +85,10 @@ namespace TestFramework.Pages
             return this;
         }
 
-        public bool IsInvalidValue()
+        public string IsInvalidValue()
         {
             string classValue = inputFirstName.GetAttribute("class");
-            return classValue.Equals("starail-Form-input starail-Form-error");
+            return classValue;
         }
     }
 }

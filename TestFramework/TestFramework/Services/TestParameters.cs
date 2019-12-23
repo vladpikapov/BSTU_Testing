@@ -28,7 +28,8 @@ namespace TestFramework.Services
 
         public static string GetData(string key)
         {
-            return ConfigFile.AppSettings.Settings[key]?.Value;
+            var data = ConfigFile.AppSettings.Settings[key];
+            return data.Value;
         }
     }
 }
