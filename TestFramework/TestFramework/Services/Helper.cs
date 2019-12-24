@@ -17,7 +17,7 @@ namespace TestFramework.Services
 
         public static void ScrollToValue(IWebDriver driver,int value)
         {
-            ((IJavaScriptExecutor)driver).ExecuteScript($"scroll(0,{value});");
+            ((IJavaScriptExecutor)driver).ExecuteScript("scroll(0,"+value.ToString()+");");
         }
 
         public static void WaitElementToBeClickable(IWebDriver driver,By locator, int time)

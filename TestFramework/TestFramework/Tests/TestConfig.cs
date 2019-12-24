@@ -24,7 +24,7 @@ namespace TestFramework.Tests
             driver = Driver.GetDriver();
             driver.Navigate().GoToUrl("https://www.internationalrail.com");
             Logger.Log.Debug("Navigated to https://www.internationalrail.com");
-            Logger.Log.Debug($"Starting test:  {TestContext.CurrentContext.Test.Name} ...");
+            Logger.Log.Debug("Starting test:" + TestContext.CurrentContext.Test.Name + "...");
         }
 
         [OneTimeTearDown]
@@ -37,7 +37,7 @@ namespace TestFramework.Tests
                 var screen = driver.TakeScreenshot();
                 screen.SaveAsFile(screenFolder + @"\screen" + DateTime.Now.ToString("yy-MM-dd_hh-mm-ss") + ".png",
                     ScreenshotImageFormat.Png);
-                Logger.Log.Error($"Error: {TestContext.CurrentContext.Result.Message}");
+                Logger.Log.Error("Error:" + TestContext.CurrentContext.Result.Message);
             }
             Logger.Log.Info("Test complete");
             Driver.CloseDriver();
